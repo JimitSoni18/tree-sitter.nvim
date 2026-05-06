@@ -1,9 +1,11 @@
 [
   (object)
   (array)
-] @indent
+] @indent.begin
 
 [
-  "]"
   "}"
-] @outdent
+  "]"
+] @indent.branch
+
+(comment) @indent.ignore

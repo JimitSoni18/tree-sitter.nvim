@@ -18,6 +18,17 @@ function M.setup(opts)
 			end
 		end
 	end
+
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "*",
+		callback = function()
+			local lang = vim.bo.filetype
+			-- Check if a parser is actually installed for this language
+			if vim.treesitter.query.get(lang, "highlights") then
+				vim.treesitter.start()
+			end
+		end,
+	})
 end
 
 return M

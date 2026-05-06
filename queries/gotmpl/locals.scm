@@ -7,6 +7,6 @@
 ] @local.scope
 
 (variable_definition
-  variable: (variable) @local.definition.variable)
+  variable: (variable) @local.definition.var)
 
 (variable) @local.reference

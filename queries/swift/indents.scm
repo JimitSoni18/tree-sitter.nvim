@@ -1,14 +1,21 @@
+; format-ignore
 [
-  (protocol_body)
-  (class_body)
-  (enum_class_body)
-  (function_declaration)
-  (init_declaration)
-  (deinit_declaration)
-  (computed_property)
-  (subscript_declaration)
-  (computed_getter)
-  (computed_setter)
+  ; ... refers to the section that will get affected by this indent.begin capture
+  (protocol_body)               ; protocol Foo { ... }
+  (class_body)                  ; class Foo { ... }
+  (enum_class_body)             ; enum Foo { ... }
+  (function_declaration)        ; func Foo (...) {...}
+  (init_declaration)            ; init(...) {...}
+  (deinit_declaration)          ; deinit {...}
+  (computed_property)           ; { ... }
+  (subscript_declaration)       ; subscript Foo(...) { ... }
+
+  (computed_getter)             ; get { ... }
+  (computed_setter)             ; set { ... }
+
+  (assignment)                  ; a = b
+
+  (control_transfer_statement)  ; return ...
   (for_statement)
   (while_statement)
   (repeat_while_statement)
@@ -16,79 +23,50 @@
   (if_statement)
   (switch_statement)
   (guard_statement)
-  (type_parameters)
-  (tuple_type)
-  (array_type)
-  (dictionary_type)
-  (call_expression)
-  (tuple_expression)
-  (array_literal)
-  (dictionary_literal)
+
+  (type_parameters)             ; x<Foo>
+  (tuple_type)                  ; (...)
+  (array_type)                  ; [String]
+  (dictionary_type)             ; [Foo: Bar]
+
+  (call_expression)             ; callFunc(...)
+  (tuple_expression)            ; ( foo + bar )
+  (array_literal)               ; [ foo, bar ]
+  (dictionary_literal)          ; [ foo: bar, x: y ]
   (lambda_literal)
   (willset_didset_block)
   (willset_clause)
   (didset_clause)
-  (value_arguments)
-] @indent
+] @indent.begin
 
-[
-  "}"
-  "]"
-  ")"
-  ">"
-] @outdent
-
-(assignment
-  .
-  (_) @expr-start
-  (_) @indent
-  (#not-same-line? @indent @expr-start)
-  (#set! "scope" "all")
-)
-
-(control_transfer_statement
-  .
-  (_) @expr-start
-  (_) @indent
-  (#not-same-line? @indent @expr-start)
-  (#set! "scope" "all")
-)
-
-(if_statement
-  (if_statement) @outdent
-)
-
-(switch_entry
-  .
-  _ @indent
-  (#set! "scope" "tail")
-)
+(init_declaration) @indent.begin
 
 (init_declaration
-  (parameter) @indent
-)
+  [
+    "init"
+    "("
+  ] @indent.branch)
 
+; indentation for init parameters
+(init_declaration
+  ")" @indent.branch @indent.end)
+
+(init_declaration
+  (parameter) @indent.begin
+  (#set! indent.immediate))
+
+; @something(...)
 (modifiers
-  (attribute) @indent
-)
+  (attribute) @indent.begin)
 
-(type_parameters
-  ">" @outdent
-)
-
-(tuple_expression
-  ")" @outdent
-)
-
-(tuple_type
-  ")" @outdent
-)
-
-(modifiers
-  (attribute
-    ")" @outdent
-  )
-)
+(function_declaration
+  (modifiers
+    .
+    (attribute)
+    (_)* @indent.branch)
+  .
+  _ @indent.branch
+  (#not-kind-eq? @indent.branch "type_parameters" "parameter"))
 
 (ERROR
   [
@@ -96,5 +74,49 @@
     "{"
     "("
     "["
-  ]
-) @indent
+  ]) @indent.begin
+
+; if-elseif
+(if_statement
+  (if_statement) @indent.dedent)
+
+; case Foo:
+; default Foo:
+; @attribute default Foo:
+(switch_entry
+  .
+  _ @indent.branch)
+
+(function_declaration
+  ")" @indent.branch)
+
+(type_parameters
+  ">" @indent.branch @indent.end .)
+
+(tuple_expression
+  ")" @indent.branch @indent.end)
+
+(value_arguments
+  ")" @indent.branch @indent.end)
+
+(tuple_type
+  ")" @indent.branch @indent.end)
+
+(modifiers
+  (attribute
+    ")" @indent.branch @indent.end))
+
+[
+  "}"
+  "]"
+] @indent.branch @indent.end
+
+[
+  ; (ERROR)
+  (comment)
+  (multiline_comment)
+  (raw_str_part)
+  (multi_line_string_literal)
+] @indent.auto
+
+(directive) @indent.ignore

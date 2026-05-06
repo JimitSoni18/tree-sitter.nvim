@@ -1,2 +1,3 @@
-((comment (text) @injection.content)
- (#set! injection.language "comment"))
+((comment
+  (text) @injection.content)
+  (#set! injection.language "comment"))

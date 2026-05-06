@@ -1,3 +1,6 @@
-(((scissors_inner) @injection.content)
- (#set! injection.include-children)
- (#set! injection.language "diff"))
+((comment_content) @injection.content
+  (#set! injection.language "comment"))
+
+((rest) @injection.content
+  (#lua-match? @injection.content "^diff")
+  (#set! injection.language "diff"))

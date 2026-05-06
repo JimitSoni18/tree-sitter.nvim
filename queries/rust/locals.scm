@@ -1,65 +1,98 @@
-; Scopes
+; Imports
+(extern_crate_declaration
+  name: (identifier) @local.definition.import)
 
-[
-  (function_item)
-  (struct_item)
-  (enum_item)
-  (union_item)
-  (type_item)
-  (trait_item)
-  (impl_item)
-  (closure_expression)
-  (block)
-] @local.scope
+(use_declaration
+  argument: (scoped_identifier
+    name: (identifier) @local.definition.import))
 
-; Definitions
+(use_as_clause
+  alias: (identifier) @local.definition.import)
+
+(use_list
+  (identifier) @local.definition.import) ; use std::process::{Child, Command, Stdio};
+
+; Functions
+(function_item
+  name: (identifier) @local.definition.function)
 
 (function_item
-  (parameters
-    (parameter
-      pattern: (identifier) @local.definition.variable.parameter)))
+  name: (identifier) @local.definition.method
+  parameters: (parameters
+    (self_parameter)))
 
-(closure_parameters (identifier) @local.definition.variable.parameter)
-
-; Mutable variables
+; Variables
+(parameter
+  pattern: (identifier) @local.definition.var)
 
 (let_declaration
-  (mutable_specifier)
-  pattern: (identifier) @local.definition.variable.mutable)
-(mut_pattern
-  (mutable_specifier)
-  (identifier) @local.definition.variable.mutable)
+  pattern: (identifier) @local.definition.var)
 
-(parameter
-  (mutable_specifier)
-  pattern: (identifier) @local.definition.variable.parameter.mutable)
+(const_item
+  name: (identifier) @local.definition.var)
+
+(tuple_pattern
+  (identifier) @local.definition.var)
+
+(let_condition
+  pattern: (_
+    (identifier) @local.definition.var))
+
+(tuple_struct_pattern
+  (identifier) @local.definition.var)
+
+(closure_parameters
+  (identifier) @local.definition.var)
 
 (self_parameter
-  (mutable_specifier)
-  (self) @local.definition.variable.builtin.mutable)
+  (self) @local.definition.var)
+
+(for_expression
+  pattern: (identifier) @local.definition.var)
+
+; Types
+(struct_item
+  name: (type_identifier) @local.definition.type)
+
+(enum_item
+  name: (type_identifier) @local.definition.type)
+
+; Fields
+(field_declaration
+  name: (field_identifier) @local.definition.field)
+
+(enum_variant
+  name: (identifier) @local.definition.field)
 
 ; References
-(self) @local.reference
 (identifier) @local.reference
 
-; lifetimes / labels
-(lifetime (identifier) @label)
-(label (identifier) @label)
+((type_identifier) @local.reference
+  (#set! reference.kind "type"))
 
-; == scoped function calls and function defs ==
-; avoid coloring functions as variables
-; taken from highlights.scm
-(call_expression
-  function: (scoped_identifier
-    name: (identifier) @function))
-(generic_function
-  function: (scoped_identifier
-    name: (identifier) @function))
+((field_identifier) @local.reference
+  (#set! reference.kind "field"))
 
-(function_item
-  name: (identifier) @function)
-(function_signature_item
-  name: (identifier) @function)
+; Macros
+(macro_definition
+  name: (identifier) @local.definition.macro)
 
-; == other ==
-(enum_variant (identifier) @type.enum.variant)
+; Module
+(mod_item
+  name: (identifier) @local.definition.namespace)
+
+; Scopes
+[
+  (block)
+  (function_item)
+  (closure_expression)
+  (while_expression)
+  (for_expression)
+  (loop_expression)
+  (if_expression)
+  (match_expression)
+  (match_arm)
+  (struct_item)
+  (enum_item)
+  (impl_item)
+] @local.scope

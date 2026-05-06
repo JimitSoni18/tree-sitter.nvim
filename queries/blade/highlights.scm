@@ -1,12 +1,14 @@
 ; inherits: html
 
-(directive) @keyword.directive
-(directive_start) @keyword.directive
-(directive_end) @keyword.directive
-(comment) @comment
-
-; merged with blade punctuation
 [
+  (directive)
+  (directive_start)
+  (directive_end)
+] @tag
+
+[
+  (php_tag)
+  (php_end_tag)
   "{{"
   "}}"
   "{!!"

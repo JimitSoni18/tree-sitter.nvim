@@ -1,9 +1,10 @@
 [
- "{"
- "}"
- ] @punctuation.bracket
+  "{"
+  "}"
+] @punctuation.bracket
 
+(comment) @comment @spell
 
-(comment) @comment
 (directive_name) @type
-(directive_params) @parameter
+
+(directive_params) @variable.parameter

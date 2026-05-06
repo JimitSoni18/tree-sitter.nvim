@@ -1,70 +1,151 @@
-(types) @type
-(type_builtin) @type.builtin
-"Array" @type.builtin
+(comment) @comment @spell
 
-(enum_tag) @constructor
+(annot_atom
+  doc: (static_string) @spell)
+
+[
+  "forall"
+  "in"
+  "let"
+  "default"
+  "doc"
+  "rec"
+  "optional"
+  "priority"
+  "force"
+  "not_exported"
+] @keyword
+
+"fun" @keyword.function
+
+"import" @keyword.import
+
+[
+  "if"
+  "then"
+  "else"
+] @keyword.conditional
+
+"match" @keyword.conditional
+
+(types) @type
+
+[
+  "Array"
+  "Number"
+  "Dyn"
+  "Bool"
+  "String"
+] @type.builtin
+
+; BUILTIN Constants
+(bool) @boolean
 
 "null" @constant.builtin
-(bool) @constant.builtin.boolean
-(str_esc_char) @constant.character.escape
-(num_literal) @constant.numeric
+
+(enum_tag) @constant
+
+(num_literal) @number
+
+[
+  (infix_op)
+  "|>"
+  "="
+  "&"
+  "&&"
+  "||"
+  "=="
+  "+"
+  "-"
+  "*"
+  "/"
+  "%"
+  "!"
+  "?"
+  "!="
+  "<"
+  "<="
+  ">"
+  ">="
+  "@"
+  ".."
+  "=>"
+  "++"
+] @operator
+
+"or" @keyword.operator
+
+(type_atom) @type
+
+(static_string) @string
+
+(chunk_literal_single) @string
+
+(chunk_literal_multi) @string
+
+(str_esc_char) @string.escape
+
+[
+  "{"
+  "}"
+  "("
+  ")"
+  "[|"
+  "|]"
+  "["
+  "]"
+] @punctuation.bracket
+
+[
+  ","
+  "."
+  ":"
+  ";"
+  "|"
+  "->"
+] @punctuation.delimiter
+
+(multstr_start) @string
+
+(multstr_end) @string
+
+[
+  (interpolation_start)
+  (interpolation_end)
+] @punctuation.special
+
+(builtin) @function.builtin
+
+(builtin
+  "%" @function.builtin)
+
+(fun_expr
+  pats: (pattern_fun
+    (ident) @variable.parameter))
+
+; application where the head terms is an identifier: function arg1 arg2 arg3
+(applicative
+  t1: (applicative
+    .
+    (record_operand
+      (atom
+        (ident))) @function))
+
+; application where the head terms is a record field path: foo.bar.function arg1 arg2 arg3
+(applicative
+  t1: (applicative
+    .
+    (record_operand
+      (record_operation_chain)) @function))
 
 (str_chunks) @string
 
-; NOTE: Nickel has no block comments
-(comment) @comment.line
-; Nickel doesn't use comments for documentation, ideally this would be
-; `@documentation` or something similar
-(annot_atom
-  doc: (static_string) @comment.block.documentation
-)
-
-(record_operand (atom (ident) @variable))
-(let_in_block
-  "let" @keyword
-  "rec"? @keyword
-  "in" @keyword
-)
-
-(let_binding
-  pat: (pattern
-    (ident) @variable
-  )
-)
-
-(fun_expr
-  "fun" @keyword.function
-  pats:
-    (pattern_fun (ident) @variable.parameter)+
-  "=>" @operator
-)
-(record_field) @variable.other.member
-
-[
-  "."
-] @punctuation.delimiter
-[
-  "{" "}"
-  "(" ")"
-  "[|" "|]"
-  "[" "]"
-] @punctuation.bracket
-(multstr_start) @punctuation.bracket
-(multstr_end) @punctuation.bracket
-(interpolation_start) @punctuation.bracket
-(interpolation_end) @punctuation.bracket
-
-["forall" "default" "doc"] @keyword
-["if" "then" "else" "match"] @keyword.control.conditional
-"import" @keyword.control.import
+(field_path_elem) @property
 
 (infix_expr
-  op: (_) @operator
-)
-
-(applicative
-  t1: (applicative
-    (record_operand) @function
-  )
-)
-(builtin) @function.builtin
+  op: (infix_b_op_6)
+  t2: (infix_expr
+    (applicative
+      .
+      (record_operand
+        (record_operation_chain) @function))))

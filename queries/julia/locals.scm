@@ -1,53 +1,71 @@
-; -----------
-; Definitions
-; -----------
-
-; Constants
-(const_statement
-  (assignment
-    . (identifier) @local.definition.constant))
-
-; Parameters
-(parameter_list
-  (identifier) @local.definition.variable.parameter)
-
-(optional_parameter
-  .
-  (identifier) @local.definition.variable.parameter)
-
-(slurp_parameter
-  (identifier) @local.definition.variable.parameter)
-
-(typed_parameter
-  parameter: (identifier) @local.definition.variable.parameter
-  (_))
-
-; Single parameter arrow function
-(function_expression
-  .
-  (identifier) @local.definition.variable.parameter)
-
-; ----------
 ; References
-; ----------
-
 (identifier) @local.reference
- 
-; ------
-; Scopes
-; ------
 
+; Definitions
+(assignment
+  .
+  (identifier) @local.definition.var)
+
+(assignment
+  .
+  (tuple_expression
+    (identifier) @local.definition.var))
+
+(assignment
+  .
+  (open_tuple
+    (identifier) @local.definition.var))
+
+(for_binding
+  .
+  (identifier) @local.definition.var)
+
+(for_binding
+  .
+  (tuple_expression
+    (identifier) @local.definition.var))
+
+(import_statement
+  (identifier) @local.definition.import)
+
+(using_statement
+  (identifier) @local.definition.import)
+
+(selected_import
+  (identifier) @local.definition.import)
+
+(module_definition
+  .
+  (identifier) @local.definition.type)
+
+(type_head
+  (identifier) @local.definition.type)
+
+(type_head
+  (binary_expression
+    .
+    (identifier) @local.definition.type))
+
+(function_definition
+  (signature
+    (call_expression
+      .
+      (identifier) @local.definition.function))) @local.scope
+
+(macro_definition
+  (signature
+    (call_expression
+      .
+      (identifier) @local.definition.function))) @local.scope
+
+; Scopes
 [
+  (quote_statement)
+  (let_statement)
   (for_statement)
   (while_statement)
   (try_statement)
   (catch_clause)
   (finally_clause)
-  (let_statement)
-  (quote_statement)
   (do_clause)
-  (function_definition)
-  (short_function_definition)
-  (macro_definition)
-] @local.scope 
-
+] @local.scope
